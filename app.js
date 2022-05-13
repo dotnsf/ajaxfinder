@@ -61,12 +61,23 @@ async function searchJS( js_url ){
         }
 
         //. XMLHttpRequest
-        var idx = 0;
+        idx = 0;
         while( idx > -1 ){
           var idx = body.toLowerCase().indexOf( 'xmlhttprequest', idx );
           if( idx >= 0 ){
             var text = fetchText( body, idx, N );
             ajax_urls.push( { type: 'xmlhttprequest', src: js_url, index: idx, text: text } );
+            idx ++;
+          }
+        }
+
+        //. fetch
+        idx = 0;
+        while( idx > -1 ){
+          var idx = body.toLowerCase().indexOf( 'fetch', idx );
+          if( idx >= 0 ){
+            var text = fetchText( body, idx, N );
+            ajax_urls.push( { type: 'fetch', src: js_url, index: idx, text: text } );
             idx ++;
           }
         }
