@@ -1,6 +1,5 @@
 //. app.js
 var client = require( 'cheerio-httpcli' );
-var N = 100;
 
 function fetchText( body, idx, n ){
   var s = idx - n;
@@ -41,44 +40,38 @@ async function searchHTML( html_url ){
   });
 }
 
-async function searchJS( js_url ){
+async function searchJS( js_url, n, extra_keywords ){
   return new Promise( function( resolve, reject ){
     client.fetch( js_url, {}, 'UTF-8', function( err, $, res, body ){
       if( err ){
         reject( err );
       }else{
         var ajax_urls = [];
-
-        //. ajax
-        var idx = 0;
-        while( idx > -1 ){
-          var idx = body.toLowerCase().indexOf( '$.ajax', idx );
-          if( idx >= 0 ){
-            var text = fetchText( body, idx, N );
-            ajax_urls.push( { type: 'ajax', src: js_url, index: idx, text: text } );
-            idx ++;
+        var keywords = [
+          '$.ajax',
+          'xmlhttprequest',
+          'axios',
+          //'request',
+          'fetch'
+        ];
+        
+        if( extra_keywords && extra_keywords.length > 0 ){
+          for( var i = 0; i < extra_keywords.length; i ++ ){
+            keywords.push( extra_keywords[i] );
           }
         }
 
-        //. XMLHttpRequest
-        idx = 0;
-        while( idx > -1 ){
-          var idx = body.toLowerCase().indexOf( 'xmlhttprequest', idx );
-          if( idx >= 0 ){
-            var text = fetchText( body, idx, N );
-            ajax_urls.push( { type: 'xmlhttprequest', src: js_url, index: idx, text: text } );
-            idx ++;
-          }
-        }
-
-        //. fetch
-        idx = 0;
-        while( idx > -1 ){
-          var idx = body.toLowerCase().indexOf( 'fetch', idx );
-          if( idx >= 0 ){
-            var text = fetchText( body, idx, N );
-            ajax_urls.push( { type: 'fetch', src: js_url, index: idx, text: text } );
-            idx ++;
+        if( keywords.length > 0 ){
+          for( var i = 0; i < keywords.length; i ++ ){
+            var idx = 0;
+            while( idx > -1 ){
+              var idx = body.toLowerCase().indexOf( keywords[i], idx );
+              if( idx >= 0 ){
+                var text = fetchText( body, idx, n );
+                ajax_urls.push( { type: keywords[i], src: js_url, index: idx, text: text } );
+                idx ++;
+              }
+            }
           }
         }
 
@@ -89,17 +82,26 @@ async function searchJS( js_url ){
 }
 
 function usage(){
-  console.log( 'Usage: node app [url] [n]' );
+  console.log( 'Usage: node app [url] [n] [keyword0] [keyword1] ..' );
   console.log( '  - [url] : ページのURL' );
   console.log( '  - [n] : 前後何文字取得するか(Default:100)' );
+  console.log( '  - [keywordx] : 追加で検索するキーワード' );
 }
 
 if( process.argv.length < 3 ){
   usage();
   process.exit( 1 );
 }else{
+  var N = 100;
+  var keywords = [];
+
   if( process.argv.length > 3 ){
     N = parseInt( process.argv[3] );
+  }
+  if( process.argv.length > 4 ){
+    for( var i = 4; i < process.argv.length; i ++ ){
+      keywords.push( process.argv[i] );
+    }
   }
 
   searchHTML( process.argv[2] ).then( async function( js_urls ){
@@ -126,7 +128,7 @@ if( process.argv.length < 3 ){
         }
         js_src = base + src;
 
-        var ajax_urls = await searchJS( js_src );
+        var ajax_urls = await searchJS( js_src, N, keywords );
         if( ajax_urls.length ){
           console.log( ajax_urls );
         }

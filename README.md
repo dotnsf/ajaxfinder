@@ -2,7 +2,7 @@
 
 ## Overview
 
-CLI tool which finds **Ajax** / **XMLHttpRequest** / **fetch** from page URL.
+CLI tool which finds **Ajax** / **XMLHttpRequest** / **Axios** / **fetch** from page URL.
 
 
 ## How to use
