@@ -14,6 +14,11 @@ CLI tool which finds **Ajax** / **XMLHttpRequest** / **Axios** / **fetch** from 
   - n : text size(default: 100)
 
 
+## References
+
+https://nodejs.libhunt.com/axios-alternatives
+
+
 ## Copyright
 
 2022 [K.Kimura @ Juge.Me](https://github.com/dotnsf) all rights reserved.
