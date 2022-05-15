@@ -48,10 +48,18 @@ async function searchJS( js_url, n, extra_keywords ){
       }else{
         var ajax_urls = [];
         var keywords = [
-          '$.ajax',
-          'xmlhttprequest',
+          'ajax',
+          //'xmlhttprequest',
           'axios',
-          //'request',
+          'request',
+          'superagent',
+          'http-proxy',
+          'undici',
+          'hyperquest',
+          'libcurl',
+          'wreck',
+          'purest',
+          'flashheart',
           'fetch'
         ];
         
