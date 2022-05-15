@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3c.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
+<meta charset="utf8"/>
+<meta http-equiv="pragma" content="no-cache"/>
+<script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css" rel="stylesheet"/>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+<meta name="apple-mobile-web-app-title" content="AJAX Finder"/>
+
+<title>AJAX Finder</title>
+<style>
+</style>
+<script>
+function sendUrl(){
+  var url = $('#url').val();
+  if( url ){
+    var data = { url: url };
+    var n = $('#n').val();
+    if( n ){
+      data.n = parseInt( n );
+    }
+    var keywords = $('#keywords').val();
+    if( keywords ){
+      data.keywords = keywords.split( ',' );
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: './find',
+      data: { url: url },
+      success: function( result ){
+        //console.log( result );
+        if( result && result.status ){
+          $('#result_div').html( '' );
+          var cnt = -1;
+          Object.keys( result.results ).forEach( function( js_src ){
+            cnt ++;
+            var ajax_urls = result.results[js_src];
+            var card = '<div class="card">'
+              + '<div class="card-header" id="card-header-' + cnt + '">'
+              + '<h5 class="mb-0">'
+              + '<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse-' + cnt + '" aria-expanded="true" aria-controls="collapse-' + cnt + '">'
+              + js_src
+              + '</button>'
+              + '</h5>'
+              + '</div>'
+              + '<div id="collapse-' + cnt + '" class="collapse" aria-labelledby="card-header-' + cnt + '" data-parent="#result_div">'
+              + '<div class="card-body"><pre>'
+              + JSON.stringify( ajax_urls, null, 2 )
+              + '</pre></div>'
+              + '</div>'
+              + '</div>';
+            $('#result_div').append( card );
+          });
+        }
+      },
+      error: function( e0, e1, e2 ){
+        console.log( e0, e1, e2 );
+      }
+    });
+  }
+}
+</script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a id="brand-title" class="navbar-brand" href="#">AJAX Finder</a>
+</nav>
+
+<div class="container" id="main_div" style="position: relative; top: 20px;">
+  <table style="table-layout: fixed;" width="100%">
+    <!--
+    <tr>
+      <td colspan="2">
+        <input type="text" class="form-control" id="n" name="n" value="100" placeholder="chars"/>
+      </td>
+      <td colspan="2">
+        <input type="text" class="form-control" id="keywords" name="keywords" value="" placeholder="keywords"/>
+      </td>
+    </tr>
+    -->
+    <tr>
+      <td colspan="3">
+        <input type="text" class="form-control" id="url" name="url" value="" placeholder="URL"/>
+      </td>
+      <td style="text-align: right;">
+        <button id="send-btn" class="btn btn-primary" onClick="sendUrl();">Send</button>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div class="container" style="position: relative; top: 20px;">
+  <div class="accordion" id="result_div">
+  </div>
+</div>
+
+</body>
+</html>

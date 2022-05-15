@@ -5,7 +5,9 @@
         "start": "node app.js"
     },
     "dependencies": {
-        "cheerio-httpcli": "^0.8.3"
+        "body-parse": "^0.1.0",
+        "cheerio-httpcli": "^0.8.3",
+        "express": "^4.18.1"
     },
     "repository": {},
     "engines": {

@@ -2,16 +2,21 @@
 
 ## Overview
 
-CLI tool which finds **Ajax** / **XMLHttpRequest** / **Axios** / **fetch** from page URL.
+GUI/CLI tool which finds **Ajax** / **XMLHttpRequest** / **Axios** / **fetch** from page URL.
 
 
-## How to use
+## How to use CLI
 
-- `$ node app [URL] [n]`
+- `$ node ajax_finder_cli [URL] [n]`
 
   - URL: Page URL
 
   - n : text size(default: 100)
+
+
+## How to use GUI
+
+- `$ node app`
 
 
 ## References
